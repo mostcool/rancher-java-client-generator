@@ -2,12 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
-	"regexp"
 	"strings"
 	"text/template"
 
@@ -16,16 +13,13 @@ import (
 	"github.com/rancher/go-rancher/client"
 )
 
-const (
-	SOURCE_OUTPUT_DIR = "../src/main/java/io/rancher"
-)
+const SourceOutputDir = "src/main/java/io/rancher"
 
 var (
 	blackListTypes        map[string]bool
 	blackListActions      map[string]bool
 	blackListIncludeables map[string]bool
 	noConversionTypes     map[string]bool
-	underscoreRegexp      = regexp.MustCompile(`([a-z])([A-Z])`)
 	schemaExists          map[string]bool
 )
 
@@ -204,11 +198,11 @@ func generateType(packageName string, useLombok bool, schema client.Schema) erro
 	if useLombok {
 		templateName = "type-lombok.template"
 	}
-	return generateTemplate(schema, path.Join(SOURCE_OUTPUT_DIR, "type", packageName, ToFirstUpper(schema.Id)+".java"), packageName, templateName)
+	return generateTemplate(schema, path.Join(SourceOutputDir, "type", packageName, ToFirstUpper(schema.Id)+".java"), packageName, templateName)
 }
 
 func generateService(packageName string, schema client.Schema, schemas client.Schemas) error {
-	serviceSourceOutputDir := path.Join(SOURCE_OUTPUT_DIR, "service", packageName)
+	serviceSourceOutputDir := path.Join(SourceOutputDir, "service", packageName)
 	for _, includeableLink := range schema.IncludeableLinks {
 		if _, ok := blackListIncludeables[includeableLink]; ok {
 			continue
@@ -460,9 +454,10 @@ func generateFiles(schemasFilePath string, packageName string, useLombok bool) e
 	return nil
 }
 
+/*
 func main() {
 	useLombok := true
-	packageName := ""
+	packageName := "cluster"
 	schemasFilePath := path.Join("schemas", packageName, "schemas.json")
 	fmt.Println(schemasFilePath)
 
@@ -472,3 +467,4 @@ func main() {
 		os.Exit(1)
 	}
 }
+*/
