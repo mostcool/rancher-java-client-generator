@@ -3,7 +3,11 @@ package io.rancher.type{{if ne .packageName ""}}.{{.packageName}}{{end}};
 import io.rancher.base.AbstractType;
 import com.fasterxml.jackson.annotation.JsonProperty;{{range $import := .meta.ListImports}}
 import {{$import}};{{end}}
+import lombok.Data;
+import lombok.experimental.Accessors;
 
+@Data
+@Accessors(chain = true)
 public class {{.class}} extends AbstractType {
 {{range $key, $value := .structFields}}{{if $value.FieldRequired }}
     /**
@@ -11,13 +15,5 @@ public class {{.class}} extends AbstractType {
     */{{end}}
 {{if eq $key "Default_flag" "Expr_flag" "For_flag"}}@JsonProperty("{{$key | substrFlag}}"){{else}}@JsonProperty("{{$key | toFirstLower}}"){{end}}
 private {{$value.FieldType}} {{$key | toLowerCamelCase}};
-{{end}}{{range $key, $value := .structFields}}
-    public {{$value.FieldType}} get{{$key | toUpperCamelCase}}() {
-    return this.{{$key | toLowerCamelCase}};
-    }
-
-    public void set{{$key | toUpperCamelCase}}({{$value.FieldType}} {{$key | toLowerCamelCase}}) {
-    this.{{$key | toLowerCamelCase}} = {{$key | toLowerCamelCase}};
-    }
 {{end}}
 }

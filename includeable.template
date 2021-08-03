@@ -17,30 +17,30 @@ import okhttp3.ResponseBody;
 
 public interface {{.classNamePrefix}}Service {
 
-@GET("{{.prefix}}/{projectId}/{{.type}}")
-Call
-<TypeCollection<{{.class}}>> list(@Path("projectId") String projectId);
+    @GET("{{.prefix}}/{projectId}/{{.type}}")
+    Call
+    <TypeCollection<{{.class}}>> list(@Path("projectId") String projectId);
 
-@GET("{{.prefix}}/{projectId}/{{.type}}")
-Call
-<TypeCollection<{{.class}}>> list(@Path("projectId") String projectId, @QueryMap Filters filters);
+    @GET("{{.prefix}}/{projectId}/{{.type}}")
+    Call
+    <TypeCollection<{{.class}}>> list(@Path("projectId") String projectId, @QueryMap Filters filters);
 
-@GET("{{.prefix}}/{projectId}/{{.type}}/{id}")
-Call<{{.class}}> get(@Path("projectId") String projectId, @Path("id") String id);
+    @GET("{{.prefix}}/{projectId}/{{.type}}/{id}")
+    Call<{{.class}}> get(@Path("projectId") String projectId, @Path("id") String id);
 
-@POST("{{.prefix}}/{projectId}/{{.type}}")
-Call<{{.class}}> create(@Path("projectId") String projectId, @Body {{.class}} {{.type}});
+    @POST("{{.prefix}}/{projectId}/{{.type}}")
+    Call<{{.class}}> create(@Path("projectId") String projectId, @Body {{.class}} {{.type}});
 
-@PUT("{{.prefix}}/{projectId}/{{.type}}/{id}")
-Call<{{.class}}> update(@Path("projectId") String projectId, @Path("id") String id, @Body {{.class}} {{.type}});
+    @PUT("{{.prefix}}/{projectId}/{{.type}}/{id}")
+    Call<{{.class}}> update(@Path("projectId") String projectId, @Path("id") String id, @Body {{.class}} {{.type}});
 
-@DELETE("{{.prefix}}/{projectId}/{{.type}}/{id}")
-Call
-<ResponseBody> delete(@Path("projectId") String projectId, @Path("id") String id);
+    @DELETE("{{.prefix}}/{projectId}/{{.type}}/{id}")
+    Call
+    <ResponseBody> delete(@Path("projectId") String projectId, @Path("id") String id);
     {{range $key, $value := .resourceActions}}
-        @POST("{{$.prefix}}/{projectId}/{{$.type}}/{id}?action={{$key}}"){{if eq $value.Input "" }}
-            Call<{{.Output | capitalize}}> {{$key}}(@Path("projectId") String projectId, @Path("id") String id);
-        {{else}}
-            Call<{{.Output | capitalize}}> {{$key}}(@Path("projectId") String projectId, @Path("id") String id, @Body {{.Input | capitalize}} {{.Input}});
-        {{end}}{{end}}
-    }
+    @POST("{{$.prefix}}/{projectId}/{{$.type}}/{id}?action={{$key}}"){{if eq $value.Input "" }}
+    Call<{{.Output | capitalize}}> {{$key}}(@Path("projectId") String projectId, @Path("id") String id);
+    {{else}}
+    Call<{{.Output | capitalize}}> {{$key}}(@Path("projectId") String projectId, @Path("id") String id, @Body {{.Input | capitalize}} {{.Input}});
+    {{end}}{{end}}
+}

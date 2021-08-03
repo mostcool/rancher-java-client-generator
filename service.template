@@ -17,30 +17,30 @@ import okhttp3.ResponseBody;
 
 public interface {{.class}}Service {
 
-@GET("{{.type}}")
-Call
-<TypeCollection<{{.class}}>> list();
+    @GET("{{.type}}")
+    Call
+    <TypeCollection<{{.class}}>> list();
 
-@GET("{{.type}}")
-Call
-<TypeCollection<{{.class}}>> list(@QueryMap Filters filters);
+    @GET("{{.type}}")
+    Call
+    <TypeCollection<{{.class}}>> list(@QueryMap Filters filters);
 
-@GET("{{.type}}/{id}")
-Call<{{.class}}> get(@Path("id") String id);
+    @GET("{{.type}}/{id}")
+    Call<{{.class}}> get(@Path("id") String id);
 
-@POST("{{.type}}")
-Call<{{.class}}> create(@Body {{.class}} {{.type}});
+    @POST("{{.type}}")
+    Call<{{.class}}> create(@Body {{.class}} {{.type}});
 
-@PUT("{{.type}}/{id}")
-Call<{{.class}}> update(@Path("id") String id, @Body {{.class}} {{.type}});
+    @PUT("{{.type}}/{id}")
+    Call<{{.class}}> update(@Path("id") String id, @Body {{.class}} {{.type}});
 
-@DELETE("{{.type}}/{id}")
-Call
-<ResponseBody> delete(@Path("id") String id);
+    @DELETE("{{.type}}/{id}")
+    Call
+    <ResponseBody> delete(@Path("id") String id);
     {{range $key, $value := .resourceActions}}
-        @POST("{{$.type}}/{id}?action={{$key}}"){{if eq $value.Input "" }}
-            Call<{{.Output | capitalize}}> {{$key}}(@Path("id") String id);
-        {{else}}
-            Call<{{.Output | capitalize}}> {{$key}}(@Path("id") String id, @Body {{.Input | capitalize}} {{.Input}});
-        {{end}}{{end}}
-    }
+    @POST("{{$.type}}/{id}?action={{$key}}"){{if eq $value.Input "" }}
+    Call<{{.Output | capitalize}}> {{$key}}(@Path("id") String id);
+    {{else}}
+    Call<{{.Output | capitalize}}> {{$key}}(@Path("id") String id, @Body {{.Input | capitalize}} {{.Input}});
+    {{end}}{{end}}
+}

@@ -13,7 +13,9 @@ import (
 	"github.com/rancher/go-rancher/client"
 )
 
-const SourceOutputDir = "src/main/java/io/rancher"
+const (
+	SourceOutputDir = "src/main/java/io/rancher"
+)
 
 var (
 	blackListTypes        map[string]bool
@@ -33,12 +35,12 @@ type fieldMetadata struct {
 	FieldRequired bool
 }
 
-func (m *metadata) importActionClass(class string) {
-	m.actionImportTypes[class] = true
-}
-
 func (m *metadata) importClass(class string) {
 	m.importTypes[class] = true
+}
+
+func (m *metadata) importActionClass(class string) {
+	m.actionImportTypes[class] = true
 }
 
 func (m metadata) ListImports() []string {
@@ -193,12 +195,8 @@ func getResourceActions(packageName string, schema client.Schema, m metadata) ma
 	return result
 }
 
-func generateType(packageName string, useLombok bool, schema client.Schema) error {
-	templateName := "type.template"
-	if useLombok {
-		templateName = "type-lombok.template"
-	}
-	return generateTemplate(schema, path.Join(SourceOutputDir, "type", packageName, ToFirstUpper(schema.Id)+".java"), packageName, templateName)
+func generateType(packageName string, schema client.Schema) error {
+	return generateTemplate(schema, path.Join(SourceOutputDir, "type", packageName, ToFirstUpper(schema.Id)+".java"), packageName, "type.template")
 }
 
 func generateService(packageName string, schema client.Schema, schemas client.Schemas) error {
@@ -414,7 +412,7 @@ func setupDirectory(dir string) error {
 	return nil
 }
 
-func generateFiles(schemasFilePath string, packageName string, useLombok bool) error {
+func generateFiles(schemasFilePath string, packageName string) error {
 	schemaBytes, err := ioutil.ReadFile(schemasFilePath)
 	if err != nil {
 		return err
@@ -440,7 +438,7 @@ func generateFiles(schemasFilePath string, packageName string, useLombok bool) e
 			continue
 		}
 
-		err = generateType(packageName, useLombok, schema)
+		err = generateType(packageName, schema)
 		if err != nil {
 			return err
 		}
@@ -456,12 +454,11 @@ func generateFiles(schemasFilePath string, packageName string, useLombok bool) e
 
 /*
 func main() {
-	useLombok := true
 	packageName := "cluster"
 	schemasFilePath := path.Join("schemas", packageName, "schemas.json")
 	fmt.Println(schemasFilePath)
 
-	err := generateFiles(schemasFilePath, packageName, useLombok)
+	err := generateFiles(schemasFilePath, packageName)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
