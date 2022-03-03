@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	SourceOutputDir = "src/main/java/io/rancher"
+	SourceOutputDir = "src/main/java/com/sinochem/rootcloud/rancher"
 )
 
 var (
@@ -101,7 +101,7 @@ func getTypeMap(schema client.Schema) (map[string]fieldMetadata, metadata) {
 		}
 
 		if name == "expr" {
-			fieldMetadataMap[ToFirstUpper("expr_flag")] = fieldMetadata{"Integer", field.Required}
+			fieldMetadataMap[ToFirstUpper("expr_flag")] = fieldMetadata{"String", field.Required}
 			continue
 		}
 
@@ -112,7 +112,7 @@ func getTypeMap(schema client.Schema) (map[string]fieldMetadata, metadata) {
 
 		fieldName := ToFirstUpper(name)
 
-		if strings.HasPrefix(field.Type, "reference") || strings.HasPrefix(field.Type, "date") || strings.HasPrefix(field.Type, "enum") {
+		if strings.EqualFold(field.Type, "intOrString") || strings.HasPrefix(field.Type, "reference") || strings.HasPrefix(field.Type, "date") || strings.HasPrefix(field.Type, "enum") {
 			fieldMetadataMap[fieldName] = fieldMetadata{"String", field.Required}
 		} else if strings.EqualFold(field.Type, "hostname") || strings.EqualFold(field.Type, "dnsLabel") || strings.EqualFold(field.Type, "dnsLabelRestricted") || strings.EqualFold(field.Type, "password") || strings.EqualFold(field.Type, "base64") {
 			fieldMetadataMap[fieldName] = fieldMetadata{"String", field.Required}
@@ -157,7 +157,7 @@ func getTypeMap(schema client.Schema) (map[string]fieldMetadata, metadata) {
 			fieldMetadataMap[fieldName] = fieldMetadata{"Object", field.Required}
 		} else if strings.HasPrefix(field.Type, "float") {
 			fieldMetadataMap[fieldName] = fieldMetadata{"Float", field.Required}
-		} else if strings.HasPrefix(field.Type, "int") {
+		} else if strings.EqualFold(field.Type, "int") {
 			fieldMetadataMap[fieldName] = fieldMetadata{"Integer", field.Required}
 		} else {
 			fieldMetadataMap[fieldName] = fieldMetadata{ToFirstUpper(field.Type), field.Required}
@@ -282,6 +282,25 @@ func getIncludeableSchema(schemas client.Schemas, includeableLink string) client
 }
 
 func getPrefix(schema client.Schema) string {
+	/**
+	var prefix string
+	schemaId := schema.Id
+
+	p := schemaId[len(schemaId)-1:]
+	q := schemaId[len(schemaId)-2:]
+
+	if p == "y" {
+		schemaIdByte := []byte(schemaId)
+		schemaIdByte[len(schemaIdByte)-1] = 'i'
+		prefix = schemaId + "es"
+	} else if p == "o" || p == "x" || p == "s" || (p == "h" && q == "c") || (p == "h" && q == "s") {
+		prefix = schemaId + "es"
+	} else {
+		prefix = schemaId + "s"
+	}
+
+	return prefix
+	*/
 	var prefix string
 	schemaId := schema.Id
 	if schemaId[len(schemaId)-1:] == "s" {

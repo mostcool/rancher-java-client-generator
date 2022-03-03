@@ -19,7 +19,7 @@ public interface {{.classNamePrefix}}Service {
 
     @GET("{{.prefix}}/{projectId}/{{.type}}")
     Call
-    <TypeCollection<{{.class}}>> list(@Path("projectId") String projectId);
+    <TypeCollection<{{.class}}>> list();
 
     @GET("{{.prefix}}/{projectId}/{{.type}}")
     Call

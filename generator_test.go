@@ -4,16 +4,29 @@ import (
 	"fmt"
 	"log"
 	"path"
+	"sync"
 	"testing"
 )
 
 func TestGenerator(t *testing.T) {
-	packageName := "cluster"
-	schemasFilePath := path.Join("schemas", packageName, "schemas.json")
-	fmt.Println(schemasFilePath)
+	packageNames := []string{"", "cluster", "project"}
 
-	err := generateFiles(schemasFilePath, packageName)
-	if err != nil {
-		log.Fatal(err)
+	wg := sync.WaitGroup{}
+	wg.Add(len(packageNames))
+
+	for _, packageName := range packageNames {
+		go func(pkgName string) {
+			defer wg.Done()
+
+			schemasFilePath := path.Join("schemas", pkgName, "schemas.json")
+			fmt.Println(schemasFilePath)
+
+			err := generateFiles(schemasFilePath, pkgName)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}(packageName)
 	}
+
+	wg.Wait()
 }

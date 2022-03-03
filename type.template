@@ -9,11 +9,11 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class {{.class}} extends AbstractType {
-{{range $key, $value := .structFields}}{{if $value.FieldRequired }}
+    {{range $key, $value := .structFields}}{{if $value.FieldRequired }}
     /**
     * required {{$value.FieldRequired}}
     */{{end}}
-{{if eq $key "Default_flag" "Expr_flag" "For_flag"}}@JsonProperty("{{$key | substrFlag}}"){{else}}@JsonProperty("{{$key | toFirstLower}}"){{end}}
-private {{$value.FieldType}} {{$key | toLowerCamelCase}};
-{{end}}
+    {{if eq $key "Default_flag" "Expr_flag" "For_flag"}}@JsonProperty("{{$key | substrFlag}}"){{else}}@JsonProperty("{{$key | toFirstLower}}"){{end}}
+    private {{$value.FieldType}} {{$key | toLowerCamelCase}};
+    {{end}}
 }
